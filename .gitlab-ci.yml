@@ -27,3 +27,6 @@ test:cargo:
   script:
     - rustc --version && cargo --version  # Print version info for debugging
     - cargo test --workspace --verbose
+  tags:
+    - windows
+
