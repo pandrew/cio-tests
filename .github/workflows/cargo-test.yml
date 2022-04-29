@@ -19,7 +19,10 @@ on:
         description: 'Cargo test'
         default: 'v1.0.0'
         required: true
-        
+  repository_dispatch:
+    types: 
+      - webhook-one
+      
 name: cargo test
 jobs:
   cargotest:
