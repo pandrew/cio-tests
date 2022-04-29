@@ -19,7 +19,7 @@ on:
         description: 'Cargo test'
         default: 'v1.0.0'
         required: true
-name: cargo test
+        
 jobs:
   cargotest:
     name: cargo test
