@@ -103,6 +103,8 @@ jobs:
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
+          GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+          GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
           CIO_DATABASE_URL: ${{ secrets.CIO_DATABASE_URL }}
           RUST_LOG: trace
           WEBHOOKY_SENTRY_DSN: ${{secrets.WEBHOOKY_SENTRY_DSN}}
