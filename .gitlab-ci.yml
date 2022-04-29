@@ -29,3 +29,4 @@ test:cargo:
     - cargo test --workspace --verbose
   tags:
     - windows
+
