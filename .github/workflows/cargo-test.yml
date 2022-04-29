@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           git clone https://github.com/oxidecomputer/cio.git test1
+          cp test1/rust-toolchain .
       - uses: actions/setup-node@v2
       - name: Install asciidoctor, pandoc, and pdftotext
         shell: bash
