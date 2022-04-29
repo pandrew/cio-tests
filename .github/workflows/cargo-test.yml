@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          git clone https://github.com/oxidecomputer/cio.git test1
+          git clone https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/blizzard.git test1
           cp test1/rust-toolchain .
       - uses: actions/setup-node@v2
       - name: Install asciidoctor, pandoc, and pdftotext
