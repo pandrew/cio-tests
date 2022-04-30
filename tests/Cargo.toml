@@ -1,0 +1,13 @@
+[package]
+name = "tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+cio-api = { git = "https://github.com/oxidecomputer/cio", rev = "acc1c2365d81ef8be38b61db75fee5886b7fe6a6" }
+
+[[test]]
+name = "test_crate1"
+path = "test_crate1.rs"
+
