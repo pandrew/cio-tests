@@ -15,6 +15,11 @@ on:
       - rust-toolchain
   workflow_dispatch:
     inputs:
+      cargo-test:
+        description: 'Cargo test main'
+        default: 'v1.0.0'
+        required: true
+    
 name: cargo test
 jobs:
   cargotest:
