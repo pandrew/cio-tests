@@ -16,11 +16,11 @@ on:
   workflow_dispatch:
     inputs:
       cargo-test:
-        description: 'Cargo test main'
+        description: 'Cargo test partial'
         default: 'v1.0.0'
         required: true
     
-name: cargo test
+name: cargo test partial
 jobs:
   cargotest:
     name: cargo test
