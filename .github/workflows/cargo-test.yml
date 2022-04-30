@@ -32,8 +32,8 @@ jobs:
       - name: checkout
         run: |
           if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
-          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/blizzard.git test1
-          cp test1/rust-toolchain .
+          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/blizzard.git t/${{ github.run_id }}
+          cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
         env:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
@@ -108,7 +108,7 @@ jobs:
                   -credential_file=${{ github.workspace }}/sql_proxy_key &
       - name: Run cargo test
         run: |
-          cd test1
+          cd t/${{ github.run_id }}
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
