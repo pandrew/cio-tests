@@ -23,7 +23,7 @@ on:
     types: 
       - webhook-one
       
-name: cargo test
+name: cargo test ${{ github.event.client_payload.ref }}
 jobs:
   cargotest:
     name: cargo test
