@@ -1,13 +1,5 @@
-[package]
-name = "cio-api-tests"
-description = "Helper functions and types for doing the activities of a CIO"
-version = "0.2.0"
-authors = ["Jess Frazelle <jess@oxide.computer>"]
-edition = "2018"
-license = "Apache-2.0"
-repository = "https://github.com/oxidecomputer/cio"
-documentation = "https://docs.rs/cio-api"
+[workspace]
 
-[dependencies]
-cio-api = { git = "https://github.com/oxidecomputer/cio", branch = "master" }
-
+members = [
+    "tests"
+]
