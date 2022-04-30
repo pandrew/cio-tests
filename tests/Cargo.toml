@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dev-dependencies]
-cio-api = { git = "https://github.com/oxidecomputer/cio", rev = "acc1c2365d81ef8be38b61db75fee5886b7fe6a6" }
+cio-api = { git = "https://github.com/oxidecomputer/cio", branch = "master" }
 
 [[test]]
 name = "test_crate1"
