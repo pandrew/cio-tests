@@ -7,6 +7,8 @@ publish = false
 [dev-dependencies]
 cio-api = { git = "https://github.com/oxidecomputer/cio", branch = "master" }
 lazy_static = "^1.4.0"
+pretty_assertions = "1"
+
 
 [[test]]
 name = "test_crate1"
