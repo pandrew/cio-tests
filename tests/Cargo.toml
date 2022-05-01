@@ -12,7 +12,7 @@ pretty_assertions = "1"
 reqwest = { version = "0.11", features = ["json"] }
 slog = "2"
 slog-term = "2"
-
+webhooky = { git = "https://github.com/oxidecomputer/cio", branch = "master" }
 
 [[test]]
 name = "test_crate1"
