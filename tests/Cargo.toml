@@ -5,6 +5,7 @@ edition = "2021"
 publish = false
 
 [dev-dependencies]
+anyhow = "1"
 cio-api = { git = "https://github.com/oxidecomputer/cio", branch = "master" }
 lazy_static = "^1.4.0"
 pretty_assertions = "1"
