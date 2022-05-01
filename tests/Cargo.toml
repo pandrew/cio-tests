@@ -8,6 +8,8 @@ publish = false
 cio-api = { git = "https://github.com/oxidecomputer/cio", branch = "master" }
 lazy_static = "^1.4.0"
 pretty_assertions = "1"
+slog = "2"
+
 
 
 [[test]]
