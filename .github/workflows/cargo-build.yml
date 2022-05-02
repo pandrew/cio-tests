@@ -29,7 +29,7 @@ jobs:
     steps:
       - name: checkout
         run: |
-          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+          if [ -z ${GIT_REF} ]; then export GIT_REF=master ;fi
           git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/benchtest.git t/${{ github.run_id }}
           cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
