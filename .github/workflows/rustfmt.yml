@@ -15,6 +15,16 @@ on:
       - .github/workflows/rustfmt.yml
       - rustfmt.toml
       - rust-toolchain
+  workflow_dispatch:
+    inputs:
+      cargo-test:
+        description: 'Cargo fmt'
+        default: 'v1.0.0'
+        required: true
+  repository_dispatch:
+    types: 
+      - webhook-one
+
 name: rustfmt
 jobs:
   rustfmt:
