@@ -37,7 +37,6 @@ jobs:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
           GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
           GIT_REF: ${{ github.event.client_payload.ref }}
-            -
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
