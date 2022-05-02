@@ -18,12 +18,6 @@ lazy_static! {
     };
 }
 
-enum BodyContents {
-    RFD126,
-    RFD252,
-    Configs,
-}
-
 async fn run_ping_request() -> anyhow::Result<()> {
     let (server, _) = webhooky::server::create_server(&SERVER_CONFIG, LOGGER.clone(), true).await?;
 
@@ -42,4 +36,9 @@ async fn run_ping_request() -> anyhow::Result<()> {
     server.close().await.unwrap();
 
     Ok(())
+}
+
+#[tokio::test]
+async fn test_ping() {
+    run_ping_request().await.unwrap();
 }
