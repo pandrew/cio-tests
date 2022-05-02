@@ -33,13 +33,15 @@ jobs:
       - name: checkout
         run: |
           if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
-          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/blizzard.git t/${{ github.run_id }}
+          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/${GIT_USER}/${GIT_REPO}.git t/${{ github.run_id }}
           cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
         env:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
           GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
           GIT_REF: ${{ github.event.client_payload.ref }}
+          GIT_REPO: ${{ github.event.client_payload.repo }}
+          GIT_USER: ${{ github.event.client_payload.user }}
       - name: Install latest nightly
         uses: oxidecomputer/actions-rs_toolchain@oxide/master
         with:
