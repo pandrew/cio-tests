@@ -69,6 +69,7 @@ jobs:
             ${{ runner.os }}-cargo-build-target-master
       - name: Run cargo build
         run: |
+          cd t/${{ github.run_id }}
           cargo build -r
           du -h target
           ls -alhR target
