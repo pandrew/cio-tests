@@ -1,0 +1,65 @@
+on:
+  push:
+    paths:
+      - '**.rs'
+      - '*/Cargo.toml'
+      - 'Cargo.lock'
+      - .github/workflows/rustfmt.yml
+      - rustfmt.toml
+      - rust-toolchain
+  pull_request:
+    paths:
+      - '**.rs'
+      - '*/Cargo.toml'
+      - 'Cargo.lock'
+      - .github/workflows/rustfmt.yml
+      - rustfmt.toml
+      - rust-toolchain
+name: rustfmt
+jobs:
+  rustfmt:
+    name: rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        run: |
+          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/${GIT_USER}/${GIT_REPO}.git t/${{ github.run_id }}
+          cp t/${{ github.run_id }}/rust-toolchain .
+        shell: bash
+        env:
+          GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+          GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+          GIT_REF: ${{ github.event.client_payload.ref }}
+          GIT_REPO: ${{ github.event.client_payload.repo }}
+          GIT_USER: ${{ github.event.client_payload.user }}
+      - name: Install latest nightly
+        uses: oxidecomputer/actions-rs_toolchain@oxide/master
+        with:
+            components: rustfmt, clippy
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-master
+      - name: Cache cargo index
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-index-master
+      - name: Cache cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-build-target-master
+      - name: Run cargo fmt --check
+        run: |
+          cd t/${{ github.run_id }}
+          cargo fmt -- --check
+        shell: bash
