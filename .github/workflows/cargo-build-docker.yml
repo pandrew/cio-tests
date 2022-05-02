@@ -21,7 +21,7 @@ on:
         required: true
 
 
-name: cargo build
+name: cargo build docker
 jobs:
   cargobuild:
     name: cargo build
