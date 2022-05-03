@@ -15,10 +15,10 @@ on:
       - rust-toolchain
   workflow_dispatch:
     inputs:
-      cargo-test:
-        description: 'Cargo build'
+      repo:
+        description: 'Repository'
         default: 'v1.0.0'
-        required: true
+        required: false
 
 
 name: cargo build docker
