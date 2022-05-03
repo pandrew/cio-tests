@@ -48,4 +48,6 @@ jobs:
         with:
           context: t/${{ github.run_id }}
           file: t/${{ github.run_id }}/cio/Dockerfile
-          push: false
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/blimpsystems/benchtest/simplewhale:latest
+
