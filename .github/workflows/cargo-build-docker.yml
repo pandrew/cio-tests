@@ -29,14 +29,16 @@ jobs:
     steps:
       - name: checkout
         run: |
-          if [ -z ${GIT_REF} ]; then export GIT_REF=master ;fi
-          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/benchtest.git t/${{ github.run_id }}
+          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/${GIT_USER}/${GIT_REPO}.git t/${{ github.run_id }}
           cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
         env:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
           GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
           GIT_REF: ${{ github.event.client_payload.ref }}
+          GIT_REPO: ${{ github.event.client_payload.repo }}
+          GIT_USER: ${{ github.event.client_payload.user }}      
       - name: Login to docker registry
         uses: docker/login-action@v1
         with:
@@ -47,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: t/${{ github.run_id }}
-          file: t/${{ github.run_id }}/cio/Dockerfile
+          file: t/${{ github.run_id }}/${{ github.event.client_payload.dockerfile }}
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/blimpsystems/benchtest/simplewhale:latest
+          tags: ${{ secrets.DOCKER_REGISTRY }}/${GIT_USER}/${GIT_REPO}/${{ github.event.client_payload.dockerimage }}:latest
 
