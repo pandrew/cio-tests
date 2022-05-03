@@ -49,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: t/${{ github.run_id }}
-          file: t/${{ github.run_id }}/${{ github.event.client_payload.dockerfile }}
+          file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimage }}/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
 
