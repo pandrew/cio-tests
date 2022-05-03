@@ -19,6 +19,9 @@ on:
         description: 'Repository'
         default: 'user/repo'
         required: true
+      dockerimage:
+        description: 'Docker image name'
+        required: true
 
 name: cargo build docker
 jobs:
@@ -48,5 +51,5 @@ jobs:
           context: t/${{ github.run_id }}
           file: t/${{ github.run_id }}/${{ github.event.client_payload.dockerfile }}
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.client_payload.dockerimage }}:latest
+          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
 
