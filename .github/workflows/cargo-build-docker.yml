@@ -22,6 +22,10 @@ on:
         description: 'Docker image name'
         required: true
 
+concurrency:
+  group: docker-image-manual-${{ github.ref }}
+  cancel-in-progress: true
+
 name: cargo build docker
 jobs:
   cargobuild:
@@ -38,6 +42,13 @@ jobs:
         env:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
           GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-manual-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-manual-master
       - name: Login to docker registry
         uses: docker/login-action@v1
         with:
