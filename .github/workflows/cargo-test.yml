@@ -44,7 +44,9 @@ jobs:
           else
           git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
           fi
+          if [ t/${{ github.run_id}}/rust-toolchain ]; then
           cp t/${{ github.run_id }}/rust-toolchain .
+          fi
         shell: bash
         env:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
