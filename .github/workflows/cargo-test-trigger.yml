@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: checkout
         run: |
-          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+          if [ -z ${GIT_REF} ]; then export GIT_REF=${{ github.event.inputs.branch }} ;fi
           if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
           if [ -z ${GIT_PROVIDER} ]; then export GIT_PROVIDER=${{ github.event.inputs.provider }} ;fi
           if [ ${{ github.event.inputs.public }} == true ]; then
