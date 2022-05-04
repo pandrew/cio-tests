@@ -51,6 +51,7 @@ jobs:
           key: ${{ runner.os }}-buildx-manual-${{ github.ref }}
           restore-keys: |
             ${{ runner.os }}-buildx-manual-master
+            ${{ runner.os }}-buildx-manual-main
       - name: Login to docker registry
         uses: docker/login-action@v1
         with:
