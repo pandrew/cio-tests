@@ -24,11 +24,14 @@ on:
       repo:
         description: 'Repository (user/repo)'
         required: true
+      branch:
+        description: 'Branch'
+        required: true
   repository_dispatch:
     types: 
       - webhook-one
       
-name: cargo test
+name: cargo test manual
 jobs:
   cargotest:
     name: cargo test
