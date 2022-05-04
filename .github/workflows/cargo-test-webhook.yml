@@ -16,7 +16,14 @@ on:
   repository_dispatch:
     types: 
       - webhook-one
-      
+     
+env:
+  GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+  GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+  GIT_REF: ${{ github.event.client_payload.ref }}
+  GIT_REPO: ${{ github.event.client_payload.repo }}
+  GIT_PROVIDER: ${{ github.event.client_payload.provider }}
+
 name: cargo test webhook
 jobs:
   cargotest:
@@ -34,12 +41,6 @@ jobs:
           rustup update
           fi
         shell: bash
-        env:
-          GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
-          GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
-          GIT_REF: ${{ github.event.client_payload.ref }}
-          GIT_REPO: ${{ github.event.client_payload.repo }}
-          GIT_PROVIDER: ${{ github.event.client_payload.provider }}
       - uses: actions/setup-node@v2
       - name: Install asciidoctor, pandoc, and pdftotext
         shell: bash
