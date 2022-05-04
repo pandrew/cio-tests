@@ -15,11 +15,14 @@ on:
       - rust-toolchain
   workflow_dispatch:
     inputs:
+      public:
+        description: 'Public?'
+        type: boolean
       provider:
-        description: 'Provider'
+        description: 'Provider (github.com)'
         required: true
       repo:
-        description: 'Repository'
+        description: 'Repository (user/repo)'
         required: true
   repository_dispatch:
     types: 
@@ -36,7 +39,11 @@ jobs:
           if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
           if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
           if [ -z ${GIT_PROVIDER} ]; then export GIT_PROVIDER=${{ github.event.inputs.provider }} ;fi
+          if [ ${{ github.event.inputs.public }} == true ]; then
+          git clone -b ${GIT_REF} https://${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+          else
           git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+          fi
           cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
         env:
