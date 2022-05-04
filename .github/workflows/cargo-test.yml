@@ -15,9 +15,11 @@ on:
       - rust-toolchain
   workflow_dispatch:
     inputs:
-      cargo-test:
-        description: 'Cargo test'
-        default: 'v1.0.0'
+      provider:
+        description: 'Provider'
+        required: true
+      repo:
+        description: 'Repository'
         required: true
   repository_dispatch:
     types: 
@@ -32,13 +34,17 @@ jobs:
       - name: checkout
         run: |
           if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
-          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/blimpsystems/blizzard.git t/${{ github.run_id }}
+          if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
+          if [ -z ${GIT_PROVIDER} ]; then export GIT_PROVIDER=${{ github.event.inputs.provider }} ;fi
+          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
           cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
         env:
           GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
           GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
           GIT_REF: ${{ github.event.client_payload.ref }}
+          GIT_REPO: ${{ github.event.client_payload.repo }}
+          GIT_PROVIDER: ${{ github.event.client_payload.provider}}
       - uses: actions/setup-node@v2
       - name: Install asciidoctor, pandoc, and pdftotext
         shell: bash
