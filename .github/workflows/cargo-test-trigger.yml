@@ -27,9 +27,6 @@ on:
       branch:
         description: 'Branch'
         required: true
-  repository_dispatch:
-    types: 
-      - webhook-one
       
 name: cargo test manual
 jobs:
