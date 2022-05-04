@@ -24,6 +24,10 @@ on:
       dockerimage:
         description: 'Docker image name'
         required: true
+      branch:
+        description: 'Branch'
+        default: 'main'
+        required: true
 
 name: cargo build docker public
 jobs:
@@ -33,9 +37,8 @@ jobs:
     steps:
       - name: checkout
         run: |
-          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
           if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
-          git clone -b main https://@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+          git clone -b ${{ github.event.inputs.branch }} https://@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
           cp t/${{ github.run_id }}/rust-toolchain .
         shell: bash
         env:
