@@ -1,0 +1,126 @@
+on:
+  push:
+    paths:
+      - '**.rs'
+      - '*/Cargo.toml'
+      - 'Cargo.lock'
+      - .github/workflows/cargo-test.yml
+      - rust-toolchain
+  pull_request:
+    paths:
+      - '**.rs'
+      - '*/Cargo.toml'
+      - 'Cargo.lock'
+      - .github/workflows/cargo-test.yml
+      - rust-toolchain
+  repository_dispatch:
+    types: 
+      - webhook-one
+      
+name: cargo test webhook
+jobs:
+  cargotest:
+    name: cargo test
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        run: |
+          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+          git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+      - name: Install latest nightly
+        run: |
+          if [ -f t/${{ github.run_id}}/rust-toolchain ]; then
+          cp t/${{ github.run_id }}/rust-toolchain .
+          rustup update
+          fi
+        shell: bash
+        env:
+          GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+          GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+          GIT_REF: ${{ github.event.client_payload.ref }}
+          GIT_REPO: ${{ github.event.client_payload.repo }}
+          GIT_PROVIDER: ${{ github.event.client_payload.provider }}
+      - uses: actions/setup-node@v2
+      - name: Install asciidoctor, pandoc, and pdftotext
+        shell: bash
+        run: |
+          sudo apt update -y && sudo apt install -y \
+            asciidoctor \
+            libusb-1.0-0-dev \
+            pandoc \
+            poppler-utils \
+            ruby \
+      - name: Install asciidoctor-pdf, asciidoctor-mermaid
+        shell: bash
+        run: |
+          sudo gem install asciidoctor-pdf asciidoctor-mermaid rouge
+          npm install @mermaid-js/mermaid-cli
+          ln -s ./node_modules/.bin/mmdc /usr/local/bin/mmdc
+      - name: Install libusb
+        shell: bash
+        run: |
+          sudo apt update -y && sudo apt install -y \
+            libusb-1.0-0-dev
+      - name: Cache github etags
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/.cache
+          key: github-cache
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-master
+      - name: Cache cargo index
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-index-master
+      - name: Cache cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-build-target-master
+      - name: Install SQL proxy
+        shell: bash
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy \
+          && chmod +x cloud_sql_proxy
+      - name: Set up environment
+        shell: bash
+        run: |
+          echo "$SQL_PROXY_KEY" > ${{ github.workspace }}/sql_proxy_key
+        env:
+          SQL_PROXY_KEY: ${{ secrets.SQL_PROXY_KEY }}
+      - name: Start the sql_proxy
+        shell: bash
+        run: |
+          ./cloud_sql_proxy -instances=${{ secrets.INSTANCE_CONNECTION_NAME }}=tcp:5432 \
+                  -credential_file=${{ github.workspace }}/sql_proxy_key &
+      - name: Run cargo test
+        run: |
+          cd t/${{ github.run_id }}
+          cargo test  -- --test-threads=1 --nocapture
+        shell: bash
+        env:
+          GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+          GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+          CIO_DATABASE_URL: ${{ secrets.CIO_DATABASE_URL }}
+          RUST_LOG: trace
+          WEBHOOKY_SENTRY_DSN: ${{secrets.WEBHOOKY_SENTRY_DSN}}
+          SENTRY_DSN: ${{secrets.WEBHOOKY_SENTRY_DSN}}
+          GITHUB_ORG: oxidecomputer
+          GH_APP_ID: ${{secrets.GH_APP_ID}}
+          GH_PRIVATE_KEY: ${{secrets.GH_PRIVATE_KEY}}
+          SENTRY_ENV: development
+          GOOGLE_KEY_ENCODED: ${{ secrets.GOOGLE_CIO_KEY_ENCODED }}
+          GUSTO_CLIENT_ID: ${{secrets.GUSTO_CLIENT_ID}}
+          GUSTO_CLIENT_SECRET: ${{secrets.GUSTO_CLIENT_SECRET}}
+          GUSTO_REDIRECT_URI: ${{secrets.GUSTO_REDIRECT_URI}}
+          RUST_BACKTRACE: 1

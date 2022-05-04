@@ -56,7 +56,7 @@ jobs:
           GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
           GIT_REF: ${{ github.event.client_payload.ref }}
           GIT_REPO: ${{ github.event.client_payload.repo }}
-          GIT_PROVIDER: ${{ github.event.client_payload.provider}}
+          GIT_PROVIDER: ${{ github.event.client_payload.provider }}
       - uses: actions/setup-node@v2
       - name: Install asciidoctor, pandoc, and pdftotext
         shell: bash
