@@ -44,8 +44,11 @@ jobs:
           else
           git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
           fi
+      - name: Install latest nightly
+        run: |
           if [ -f t/${{ github.run_id}}/rust-toolchain ]; then
           cp t/${{ github.run_id }}/rust-toolchain .
+          rustup update
           fi
         shell: bash
         env:
@@ -70,10 +73,6 @@ jobs:
           sudo gem install asciidoctor-pdf asciidoctor-mermaid rouge
           npm install @mermaid-js/mermaid-cli
           ln -s ./node_modules/.bin/mmdc /usr/local/bin/mmdc
-      - name: Install latest nightly
-        uses: oxidecomputer/actions-rs_toolchain@oxide/master
-        with:
-            components: rustfmt, clippy
       - name: Install libusb
         shell: bash
         run: |
