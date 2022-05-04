@@ -64,4 +64,5 @@ jobs:
           file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimage }}/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
-
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
