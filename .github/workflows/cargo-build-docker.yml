@@ -21,6 +21,10 @@ on:
       dockerimage:
         description: 'Docker image name'
         required: true
+      branch:
+        description: 'Branch'
+        default: 'main'
+        required: true
       push:
         description: 'Push image?'
         type: boolean
