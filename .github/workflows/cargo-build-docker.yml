@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: checkout
         run: |
-          if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+          if [ -z ${GIT_REF} ]; then export GIT_REF=${{ github.event.inputs.branch }}  ;fi
           if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
           git clone -b main https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/${GIT_REPO}.git t/${{ github.run_id }}
           cp t/${{ github.run_id }}/rust-toolchain .
