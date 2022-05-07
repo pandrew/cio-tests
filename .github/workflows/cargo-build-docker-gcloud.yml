@@ -69,7 +69,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: ${{ ! startsWith(github.ref, 'refs/heads/dependabot') && github.event_name != 'pull_request' }}
-          file: ./cio/Dockerfile
-          tags: ghcr.io/${{ github.repository_owner }}/cio:latest
+          file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimage }}/Dockerfile
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.event.inputs.dockerimage }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
