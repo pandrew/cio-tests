@@ -22,6 +22,9 @@ on:
       dockerimage:
         description: 'Docker image name'
         required: true
+      path:
+        description: 'Dockerfile path'
+        required: true
       branch:
         description: 'Branch'
         default: 'main'
@@ -69,7 +72,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: t/${{ github.run_id }}
-          file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimage }}/Dockerfile
+          file: t/${{ github.run_id }}/${{ github.event.inputs.path }}/Dockerfile
           push: ${{ github.event.inputs.push }}
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
