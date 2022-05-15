@@ -33,6 +33,10 @@ on:
         description: 'Push image?'
         type: boolean
         required: true
+      runner:
+        description: 'Runner (self-hosted?)'
+        default: 'ubuntu-latest'
+        required: true
 
 concurrency:
   group: docker-image-manual-${{ github.ref }}
@@ -41,7 +45,7 @@ concurrency:
 jobs:
   cargobuild:
     name: cargo build
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.events.input.runner }}
     steps:
       - name: checkout
         run: |
