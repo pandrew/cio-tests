@@ -1,4 +1,4 @@
-name: docker-image-manual
+name: cargo-build-webhook-docker
 on:
   push:
     paths:
