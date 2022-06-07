@@ -14,33 +14,9 @@ on:
       - 'Cargo.lock'
       - .github/workflows/cargo-build.yml
       - rust-toolchain
-  workflow_dispatch:
-    inputs:
-      repo:
-        description: 'Repository (user/repo)'
-        required: true
-      dockerimage:
-        description: 'Docker image name'
-        required: true
-      path:
-        description: 'Dockerfile path'
-        required: true
-      branch:
-        description: 'Branch'
-        default: 'main'
-        required: true
-      push:
-        description: 'Push image?'
-        type: boolean
-        required: true
-      runner:
-        description: 'Runner (self-hosted?)'
-        default: 'ubuntu-latest'
-        required: true
-        - rust-toolchain
   repository_dispatch:
     types: 
-      - webhook-docker
+      - webhook-docker  
 
 concurrency:
   group: docker-image-manual-${{ github.ref }}
@@ -49,7 +25,7 @@ concurrency:
 jobs:
   cargobuild:
     name: cargo build
-    runs-on: ${{ github.event.inputs.runner }}
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         run: |
