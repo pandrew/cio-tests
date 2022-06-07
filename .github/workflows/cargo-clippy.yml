@@ -21,7 +21,7 @@ on:
         required: true
   repository_dispatch:
     types: 
-      - webhook-one
+      - webhook-one-${{ github.run_id }}
 
 
 name: cargo clippy
