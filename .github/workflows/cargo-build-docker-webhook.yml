@@ -84,6 +84,7 @@ jobs:
           push: ${{ github.event.inputs.push }}
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
           secrets: |
+            "blizzard_user=${{ secrets.GIT_REPO_BLIZZARD_USER }}"
             "blizzard_token=${{ secrets.GIT_REPO_BLIZZARD_TOKEN }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
