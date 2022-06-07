@@ -28,8 +28,6 @@ env:
   GIT_REF: ${{ github.event.client_payload.ref }}
   GIT_REPO: ${{ github.event.client_payload.repo }}
   GIT_PROVIDER: ${{ github.event.client_payload.provider }}
-  DOCKER_IMAGE: ${{ github.event.client_payload.dockerimage }}
-  DOCKER_IMAGE_PATH: ${{ github.event.client_payload.dockerimage_path }}
 
 
 jobs:
@@ -64,9 +62,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: t/${{ github.run_id }}
-          file: t/${{ github.run_id }}/${DOCKER_IMAGE_PATH}/Dockerfile
+          file: t/${{ github.run_id }}/${{ github.event.client_payload.dockerimage_path }}/Dockerfile
           push: false
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${GIT_REPO}/${DOCKER_IMAGE}:latest
+          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.dockerimage }}:latest
           secrets: |
             "blizzard_user=${{ secrets.GIT_REPO_BLIZZARD_USER }}"
             "blizzard_token=${{ secrets.GIT_REPO_BLIZZARD_TOKEN }}"
