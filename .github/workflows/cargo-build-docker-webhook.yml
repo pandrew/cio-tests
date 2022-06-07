@@ -61,7 +61,7 @@ jobs:
         with:
           context: t/${{ github.run_id }}
           file: t/${{ github.run_id }}/${{ github.event.inputs.path }}/Dockerfile
-          push: ${{ github.event.inputs.push }}
+          push: false
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
           secrets: |
             "blizzard_user=${{ secrets.GIT_REPO_BLIZZARD_USER }}"
