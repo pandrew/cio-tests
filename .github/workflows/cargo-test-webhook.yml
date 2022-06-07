@@ -15,7 +15,7 @@ on:
       - rust-toolchain
   repository_dispatch:
     types: 
-      - webhook-one-${{ github.run_id }}
+      - webhook-one
      
 env:
   GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
