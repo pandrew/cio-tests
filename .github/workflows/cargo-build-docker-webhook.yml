@@ -22,6 +22,12 @@ concurrency:
   group: docker-image-manual-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+  GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+  GIT_REF: ${{ github.event.client_payload.ref }}
+  GIT_REPO: ${{ github.event.client_payload.repo }}
+  GIT_PROVIDER: ${{ github.event.client_payload.provider }}
 jobs:
   cargobuild:
     name: cargo build
@@ -29,8 +35,6 @@ jobs:
     steps:
       - name: checkout
         run: |
-          if [ -z ${GIT_REF} ]; then export GIT_REF=${{ github.event.inputs.branch }}  ;fi
-          if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
           git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@gitlab.com/${GIT_REPO}.git t/${{ github.run_id }}
           if [ -f t/${{ github.run_id }}/rust-toolchain ]; then cp t/${{ github.run_id }}/rust-toolchain . ;fi
         shell: bash
