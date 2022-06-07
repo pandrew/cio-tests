@@ -77,11 +77,13 @@ jobs:
           username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_ACCESS_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: t/${{ github.run_id }}
           file: t/${{ github.run_id }}/${{ github.event.inputs.path }}/Dockerfile
           push: ${{ github.event.inputs.push }}
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
+          secrets: |
+            "blizzard_token=${{ secrets.GIT_REPO_BLIZZARD_TOKEN }}"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
