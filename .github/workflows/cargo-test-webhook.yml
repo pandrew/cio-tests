@@ -131,4 +131,4 @@ jobs:
           GUSTO_REDIRECT_URI: ${{secrets.GUSTO_REDIRECT_URI}}
           RUST_BACKTRACE: 1
           CARGO_NET_GIT_FETCH_WITH_CLI: true
-          TEST_TEST: toJSON( ${{ github.event.client_payload.private_repo }} )
+          TEST_TEST: join(github.event.client_payload.private_repo, ',' )
