@@ -37,6 +37,7 @@ jobs:
           if [ ${GIT_PROVIDER} == "gitlab.com" ]; then
           git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/${GIT_REPO}";
           fi
+          git config -l
       - name: Install latest nightly
         run: |
           if [ -f t/${{ github.run_id}}/rust-toolchain ]; then
