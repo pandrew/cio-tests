@@ -109,7 +109,6 @@ jobs:
         run: |
           cd t/${{ github.run_id }}
           if [ ${GIT_PROVIDER} == "gitlab.com" ]; then
-          CARGO_NET_GIT_FETCH_WITH_CLI=true
           git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/${GIT_REPO}";
           fi
           cargo test  -- --test-threads=1 --nocapture
@@ -130,3 +129,4 @@ jobs:
           GUSTO_CLIENT_SECRET: ${{secrets.GUSTO_CLIENT_SECRET}}
           GUSTO_REDIRECT_URI: ${{secrets.GUSTO_REDIRECT_URI}}
           RUST_BACKTRACE: 1
+          CARGO_NET_GIT_FETCH_WITH_CLI: true
