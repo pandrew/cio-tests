@@ -22,7 +22,7 @@ env:
   GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
   GIT_REF: ${{ github.event.client_payload.ref }}
   GIT_REPO: ${{ github.event.client_payload.repo }}
-  GIT_PRIVATE_REPO: join(github.event.client_payload.private_repo, ',')
+  GIT_PRIVATE_REPO: join(${{ github.event.client_payload.private_repo }}, ',')
   GIT_PROVIDER: ${{ github.event.client_payload.provider }}
 
 name: cargo-test-webhook
