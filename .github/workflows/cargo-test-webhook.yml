@@ -110,7 +110,7 @@ jobs:
         run: |
           cd t/${{ github.run_id }}
           for private_repo in "${GIT_PRIVATE_REPO[@]}"; do
-          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/$private_repo";
+          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/$private_repo.git".insteadOf "https://${GIT_PROVIDER}/$private_repo";
           done
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
