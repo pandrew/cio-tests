@@ -34,10 +34,6 @@ jobs:
         run: |
           if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
           git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
-          if [ ${GIT_PROVIDER} == "gitlab.com" ]; then
-          CARGO_NET_GIT_FETCH_WITH_CLI=true
-          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/${GIT_REPO}";
-          fi
           git config -l
       - name: Install latest nightly
         run: |
@@ -112,7 +108,10 @@ jobs:
       - name: Run cargo test
         run: |
           cd t/${{ github.run_id }}
-          git config -l
+          if [ ${GIT_PROVIDER} == "gitlab.com" ]; then
+          CARGO_NET_GIT_FETCH_WITH_CLI=true
+          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/${GIT_REPO}";
+          fi
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
