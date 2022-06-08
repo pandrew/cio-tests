@@ -108,9 +108,7 @@ jobs:
       - name: Run cargo test
         run: |
           cd t/${{ github.run_id }}
-          if [ ${GIT_PROVIDER} == "gitlab.com" ]; then
           git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/${GIT_REPO}";
-          fi
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
