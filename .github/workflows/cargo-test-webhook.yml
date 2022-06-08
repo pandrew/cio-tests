@@ -108,10 +108,10 @@ jobs:
       - name: Run cargo test
         run: |
           cd t/${{ github.run_id }}
-          echo $TEST_TEST
           for private_repo in $( ${{ github.event.client_payload.private_repo }} ); do
           git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/$private_repo.git".insteadOf "https://${GIT_PROVIDER}/$private_repo";
           done
+          git config -l
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
@@ -131,4 +131,3 @@ jobs:
           GUSTO_REDIRECT_URI: ${{secrets.GUSTO_REDIRECT_URI}}
           RUST_BACKTRACE: 1
           CARGO_NET_GIT_FETCH_WITH_CLI: true
-          TEST_TEST: join(${{github.event.client_payload.private_repo}}, ',' )
