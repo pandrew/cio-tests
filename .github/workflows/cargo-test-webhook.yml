@@ -22,6 +22,7 @@ env:
   GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
   GIT_REF: ${{ github.event.client_payload.ref }}
   GIT_REPO: ${{ github.event.client_payload.repo }}
+  GIT_PRIVATE_REPO: ${{ github.event.client_payload.private_repo }}
   GIT_PROVIDER: ${{ github.event.client_payload.provider }}
 
 name: cargo-test-webhook
@@ -108,7 +109,9 @@ jobs:
       - name: Run cargo test
         run: |
           cd t/${{ github.run_id }}
-          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/${GIT_REPO}";
+          for private_repo in "${GIT_PRIVATE_REPO[@]}";
+          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git".insteadOf "https://${GIT_PROVIDER}/$private_repo";
+          done
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
