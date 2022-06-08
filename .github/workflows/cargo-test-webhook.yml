@@ -111,6 +111,7 @@ jobs:
       - name: Run cargo test
         run: |
           cd t/${{ github.run_id }}
+          git config -l
           cargo test  -- --test-threads=1 --nocapture
         shell: bash
         env:
