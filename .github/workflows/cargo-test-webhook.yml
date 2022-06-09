@@ -27,7 +27,7 @@ env:
 name: cargo-test-webhook
 jobs:
   cargotest:
-    name: cargo test
+    name: cargo test ${{ github.run_id }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout
