@@ -23,6 +23,12 @@ on:
     types: 
       - webhook-one
 
+env:
+  GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
+  GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
+  GIT_REF: ${{ github.event.client_payload.ref }}
+  GIT_REPO: ${{ github.event.client_payload.repo }}
+  GIT_PROVIDER: ${{ github.event.client_payload.provider }}
 
 name: cargo clippy
 jobs:
@@ -75,5 +81,11 @@ jobs:
       - name: Run cargo clippy
         run: |
           cd t/${{ github.run_id }}
+          export private_repos=${{ join(github.event.client_payload.private_repo, ' ') }}
+          for private_repo in ${private_repos[@]}; do
+          git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/$private_repo.git".insteadOf "https://${GIT_PROVIDER}/$private_repo";
           cargo clippy
         shell: bash
+        env:
+          RUST_BACKTRACE: 1
+          CARGO_NET_GIT_FETCH_WITH_CLI: true
