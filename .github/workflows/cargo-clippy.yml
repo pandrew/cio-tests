@@ -84,6 +84,7 @@ jobs:
           export private_repos=${{ join(github.event.client_payload.private_repo, ' ') }}
           for private_repo in ${private_repos[@]}; do
           git config --global url."https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/$private_repo.git".insteadOf "https://${GIT_PROVIDER}/$private_repo";
+          done
           cargo clippy
         shell: bash
         env:
