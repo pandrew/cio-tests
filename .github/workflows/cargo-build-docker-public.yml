@@ -58,5 +58,5 @@ jobs:
           context: t/${{ github.run_id }}
           file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimagepath }}/Dockerfile
           push: false
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
+          tags: ${{ secrets.DOCKER_REGISTRY }}/percent20/dockerfiles/${{ github.event.inputs.dockerimage }}:latest
 
