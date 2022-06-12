@@ -24,6 +24,9 @@ on:
       dockerimage:
         description: 'Docker image name'
         required: true
+      dockerimagepath:
+        description: 'Docker image path'
+        required: false
       branch:
         description: 'Branch'
         default: 'main'
@@ -53,7 +56,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: t/${{ github.run_id }}
-          file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimage }}/Dockerfile
+          file: t/${{ github.run_id }}/${{ github.event.inputs.dockerimagepath }}/Dockerfile
           push: false
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.inputs.repo }}/${{ github.event.inputs.dockerimage }}:latest
 
