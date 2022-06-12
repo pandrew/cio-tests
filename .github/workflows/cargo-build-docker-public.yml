@@ -39,7 +39,7 @@ jobs:
         run: |
           if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
           git clone -b ${{ github.event.inputs.branch }} https://@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
-          cp t/${{ github.run_id }}/rust-toolchain .
+          if [ -f t/${{ github.run_id }}/rust-toolchain ]; then cp t/${{ github.run_id }}/rust-toolchain . ;fi
         shell: bash
         env:
           GIT_PROVIDER: ${{ github.event.inputs.provider }}
