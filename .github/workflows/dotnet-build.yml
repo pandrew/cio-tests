@@ -1,0 +1,36 @@
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: 'Provider (github.com)'
+        required: true
+      repo:
+        description: 'Repository (user/repo)'
+        required: true
+      branch:
+        description: 'Branch'
+        default: 'main'
+        required: true
+      solution:
+        description: 'Solution/project'
+        required: true
+
+name: cargo build docker public
+jobs:
+  cargobuild:
+    name: cargo build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        run: |
+          if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
+          git clone -b ${{ github.event.inputs.branch }} https://${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+        shell: bash
+        env:
+          GIT_PROVIDER: ${{ github.event.inputs.provider }}
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+      - run: dotnet build ${{ github.event.inputs.solution }}
+
