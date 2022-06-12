@@ -15,7 +15,7 @@ on:
         description: 'Solution/project'
         required: true
 
-name: cargo build docker public
+name: dotnet build ${{ github.event.inputs.repo }}
 jobs:
   cargobuild:
     name: cargo build
