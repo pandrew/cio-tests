@@ -44,7 +44,7 @@ concurrency:
 
 jobs:
   cargobuild:
-    name: cargo build
+    name: cargo build ${{ github.event.inputs.repo }}
     runs-on: ${{ github.event.inputs.runner }}
     steps:
       - name: checkout
