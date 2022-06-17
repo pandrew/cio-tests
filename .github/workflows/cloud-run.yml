@@ -1,0 +1,79 @@
+name: cloud-run
+
+on:
+  push:
+    branches:
+    - main
+  repository_dispatch:
+    types: 
+      - webhook-deploy
+
+env:
+  PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+  RUN_REGION: us-central1
+  SERVICE_NAME: webhooky
+
+concurrency:
+  group: cloudrun
+  cancel-in-progress: true
+
+jobs:
+  setup-build-deploy:
+    name: Setup, Build, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      run: |
+        if [ -z ${GIT_REF} ]; then export GIT_REF=main ;fi
+        git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@v0
+      with:
+        service_account_key: ${{ secrets.GOOGLE_CLOUD_SA_KEY }}
+        project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+
+    # Build and push image to Google Container Registry
+    - name: Build image
+      run: |-
+        gcloud config set builds/use_kaniko True
+        gcloud config set builds/kaniko_cache_ttl 72
+        mv webhooky/Dockerfile .
+        cp .dockerignore .gcloudignore
+        gcloud builds submit \
+          --quiet \
+          --timeout 2h \
+          --machine-type n1-highcpu-32 \
+          --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
+    - name: Extract sha
+      shell: bash
+      run: echo "::set-output name=hash::${GITHUB_SHA:0:8}"
+      id: extract_sha
+    # Deploy image to Cloud Run
+    - name: Deploy
+      run: |-
+        gcloud run deploy "$SERVICE_NAME" \
+          --quiet \
+          --region "$RUN_REGION" \
+          --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+          --cpu 4 \
+          --memory 16Gi \
+          --platform "managed" \
+          --no-cpu-throttling \
+          --set-env-vars "CIO_DATABASE_URL=${{secrets.CIO_DATABASE_URL_EXTERNAL}},RUST_BACKTRACE=1,RUST_LOG=info,GITHUB_ORG=oxidecomputer,GH_APP_ID=${{secrets.GH_APP_ID}},GH_PRIVATE_KEY=${{secrets.GH_PRIVATE_KEY}},SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }},SHIPPO_API_TOKEN=${{secrets.SHIPPO_API_TOKEN}},WEBHOOKY_SENTRY_DSN=${{secrets.WEBHOOKY_SENTRY_DSN}},GIT_HASH=${{ steps.extract_sha.outputs.hash }},SENTRY_ENV=production,DOCUSIGN_REDIRECT_URI=${{ secrets.DOCUSIGN_REDIRECT_URI }},DOCUSIGN_INTEGRATION_KEY=${{ secrets.DOCUSIGN_INTEGRATION_KEY }},DOCUSIGN_WEBHOOK_ENDPOINT=${{ secrets.DOCUSIGN_WEBHOOK_ENDPOINT }},DOCUSIGN_CLIENT_SECRET=${{ secrets.DOCUSIGN_CLIENT_SECRET }},GOOGLE_GEOCODE_API_KEY=${{ secrets.GOOGLE_GEOCODE_API_KEY}},RAMP_CLIENT_ID=${{ secrets.RAMP_CLIENT_ID }},RAMP_CLIENT_SECRET=${{secrets.RAMP_CLIENT_SECRET}},RAMP_REDIRECT_URI=${{ secrets.RAMP_REDIRECT_URI }},QUICKBOOKS_CLIENT_ID=${{ secrets.QUICKBOOKS_CLIENT_ID}},QUICKBOOKS_CLIENT_SECRET=${{secrets.QUICKBOOKS_CLIENT_SECRET}},QUICKBOOKS_REDIRECT_URI=${{secrets.QUICKBOOKS_REDIRECT_URI}},GUSTO_CLIENT_ID=${{secrets.GUSTO_CLIENT_ID}},GUSTO_CLIENT_SECRET=${{secrets.GUSTO_CLIENT_SECRET}},GUSTO_REDIRECT_URI=${{secrets.GUSTO_REDIRECT_URI}},GOOGLE_KEY_ENCODED=${{ secrets.GOOGLE_CIO_KEY_ENCODED }},MAILCHIMP_CLIENT_ID=${{ secrets.MAILCHIMP_CLIENT_ID }},MAILCHIMP_CLIENT_SECRET=${{ secrets.MAILCHIMP_CLIENT_SECRET }},MAILCHIMP_REDIRECT_URI=${{ secrets.MAILCHIMP_REDIRECT_URI }},SLACK_CLIENT_ID=${{ secrets.SLACK_CLIENT_ID }},SLACK_CLIENT_SECRET=${{secrets.SLACK_CLIENT_SECRET}},SLACK_REDIRECT_URI=${{secrets.SLACK_REDIRECT_URI}},ZOOM_CLIENT_ID=${{secrets.ZOOM_CLIENT_ID}},ZOOM_CLIENT_SECRET=${{secrets.ZOOM_CLIENT_SECRET}},ZOOM_REDIRECT_URI=${{secrets.ZOOM_REDIRECT_URI}},REVAI_API_KEY=${{secrets.REVAI_API_KEY}},MAILCHIMP_LIST_ID_RACK_LINE=${{secrets.MAILCHIMP_LIST_ID_RACK_LINE}},SHIPBOB_WEBHOOKS_URL=${{secrets.SHIPBOB_WEBHOOKS_URL}},EASYPOST_API_KEY=${{secrets.EASYPOST_API_KEY}},ZOHO_CLIENT_ID=${{secrets.ZOHO_CLIENT_ID}},ZOHO_CLIENT_SECRET=${{secrets.ZOHO_CLIENT_SECRET}}" \
+          --max-instances=5 \
+          --min-instances=1 \
+          --allow-unauthenticated
+        # Wait for it to be deployed
+        sleep 100
+    - name: Create Sentry release
+      uses: getsentry/action-release@v1
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: ${{secrets.SENTRY_ORG}}
+        SENTRY_PROJECT: webhooky
+      with:
+        environment: production
+        version: ${{ steps.extract_sha.outputs.hash }}
+
