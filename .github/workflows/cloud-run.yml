@@ -35,16 +35,18 @@ jobs:
         git clone -b ${GIT_REF} https://${GIT_REPO_BLIZZARD_USER}:${GIT_REPO_BLIZZARD_TOKEN}@${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
 
     # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@v0
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0'
       with:
-        service_account_key: ${{ secrets.GOOGLE_CLOUD_SA_KEY }}
-        project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+        credentials_json: '${{ secrets.GOOGLE_CLOUD_SA_KEY }}'
 
     # Build and push image to Google Container Registry
     - name: Build image
       run: |-
         gcloud config set builds/use_kaniko True
         gcloud config set builds/kaniko_cache_ttl 72
+        gcloud config set project ${{ secrets.GOOGLE_CLOUD_SA_KEY }}
         cd t/${{ github.run_id }}
         mv $DOCKERFILE_PATH/Dockerfile .
         cp .dockerignore .gcloudignore
