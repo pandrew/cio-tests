@@ -10,7 +10,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
-  RUN_REGION: us-central1
+  RUN_REGION: europe-west-1
   SERVICE_NAME: ${{ github.event.client_payload.servicename }}
   DOCKERFILE_PATH: ${{ github.event.client_payload.dockerfile_path }}
   GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
