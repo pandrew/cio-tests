@@ -28,7 +28,7 @@ on:
         description: 'Branch'
         required: true
       
-name: cargo test manual
+name: cargo test manual ${{ github.event.inputs.repo }}
 jobs:
   cargotest:
     name: cargo test
