@@ -28,10 +28,10 @@ on:
         description: 'Branch'
         required: true
       
-name: cargo test manual ${{ github.event.inputs.repo }}
+name: cargo test manual
 jobs:
   cargotest:
-    name: cargo test
+    name: cargo test ${{ github.event.inputs.repo }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout
