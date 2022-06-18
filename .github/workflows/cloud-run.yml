@@ -48,7 +48,7 @@ jobs:
         gcloud config set builds/kaniko_cache_ttl 72
         gcloud config set project ${{ secrets.GOOGLE_CLOUD_PROJECT }}
         cd t/${{ github.run_id }}
-        mv $DOCKERFILE_PATH/Dockerfile .
+        mv ${DOCKERFILE_PATH}/Dockerfile .
         cp .dockerignore .gcloudignore
         gcloud builds submit \
           --quiet \
