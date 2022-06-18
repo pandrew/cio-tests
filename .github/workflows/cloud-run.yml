@@ -11,7 +11,8 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
   RUN_REGION: us-central1
-  SERVICE_NAME: webhooky
+  SERVICE_NAME: ${{ github.event.client_payload.servicename }}
+  DOCKERFILE_PATH: ${{ github.event.client_payload.dockerfile_path }}
   GIT_REPO_BLIZZARD_USER: ${{secrets.GIT_REPO_BLIZZARD_USER}}
   GIT_REPO_BLIZZARD_TOKEN: ${{secrets.GIT_REPO_BLIZZARD_TOKEN}}
   GIT_REF: ${{ github.event.client_payload.ref }}
@@ -44,7 +45,7 @@ jobs:
       run: |-
         gcloud config set builds/use_kaniko True
         gcloud config set builds/kaniko_cache_ttl 72
-        mv webhooky/Dockerfile .
+        mv $DOCKERFILE_PATH/Dockerfile .
         cp .dockerignore .gcloudignore
         gcloud builds submit \
           --quiet \
