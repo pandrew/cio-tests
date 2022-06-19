@@ -54,8 +54,8 @@ jobs:
           --quiet \
           --timeout 2h \
           --machine-type n1-highcpu-32 \
-          --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
-          --suppress-logs
+          --suppress-logs \
+          --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" 
     - name: Extract sha
       shell: bash
       run: echo "::set-output name=hash::${GITHUB_SHA:0:8}"
