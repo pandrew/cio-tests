@@ -54,7 +54,6 @@ jobs:
           --quiet \
           --timeout 2h \
           --machine-type n1-highcpu-32 \
-          --suppress-logs \
           --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" 
     - name: Extract sha
       shell: bash
