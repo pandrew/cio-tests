@@ -81,7 +81,7 @@ jobs:
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         SENTRY_ORG: ${{secrets.SENTRY_ORG}}
-        SENTRY_PROJECT: hookdy
+        SENTRY_PROJECT: hookd
       with:
         environment: production
         version: ${{ steps.extract_sha.outputs.hash }}
