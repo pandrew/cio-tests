@@ -44,6 +44,7 @@ jobs:
     # Build and push image to Google Container Registry
     - name: Build image
       run: |-
+        gcloud components update
         gcloud config set builds/use_kaniko True
         gcloud config set builds/kaniko_cache_ttl 72
         gcloud config set project ${{ secrets.GOOGLE_CLOUD_PROJECT }}
