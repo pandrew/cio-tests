@@ -1,0 +1,35 @@
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: 'Provider (github.com'
+        required: true
+      repo:
+        description: 'Repository (user/repo)'
+        required: true
+      branch:
+        description: 'Branch'
+        default: 'main'
+        required: true
+
+name: cargo build public
+jobs:
+  cargobuild:
+    name: cargo build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        run: |
+          if [ -z ${GIT_REPO} ]; then export GIT_REPO=${{ github.event.inputs.repo }} ;fi
+          git clone -b ${{ github.event.inputs.branch }} https://${GIT_PROVIDER}/${GIT_REPO}.git t/${{ github.run_id }}
+          if [ -f t/${{ github.run_id }}/rust-toolchain ]; then cp t/${{ github.run_id }}/rust-toolchain . ;fi
+        shell: bash
+        env:
+          GIT_PROVIDER: ${{ github.event.inputs.provider }}
+      - name: Run cargo test
+        run: |
+          cd t/${{ github.run_id }}
+          cargo build
+        shell: bash
+
+
